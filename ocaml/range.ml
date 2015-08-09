@@ -29,6 +29,20 @@ let () = f curr in
 range_aux next  
 in range_aux start 
 
+let iter_cond ?(start=X.min_val) ?(step=X.min_step) stop ~f =
+let stop_val = (X.sub stop X.min_step) in
+let rec range_aux curr =
+let res = f curr in
+match res with 
+|`Continue -> 
+if X.eq curr stop_val then
+()
+else
+let next = X.add curr step in
+range_aux next  
+|`Repeat -> 
+range_aux curr
+in range_aux start 
 
 let fold ?(start=X.min_val) ?(step=X.min_step) ~init stop ~f =
 let stop_val = (X.sub stop X.min_step) in
