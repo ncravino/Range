@@ -10,7 +10,7 @@ module Range = struct
       let to_list ?(start=X.min_val) ?(step=X.min_step) stop =
         let rec range_aux curr acc =
           if X.eq curr start then
-            acc
+            curr::acc
           else
             let next = X.sub curr step in
               range_aux next (curr::acc) 
@@ -19,7 +19,7 @@ module Range = struct
     let iter ?(start=X.min_val) ?(step=X.min_step) stop ~f =
       let rec range_aux curr =
         if X.eq curr stop then
-          ()
+          f curr
         else
           let next = X.add curr step in
           let () = f curr in
@@ -30,7 +30,7 @@ module Range = struct
     let fold ?(start=X.min_val) ?(step=X.min_step) ~init stop ~f =
       let rec range_aux curr acc =
         if X.eq curr stop then
-          acc
+          f acc curr
         else
           let next = X.add curr step in
             range_aux next (f acc curr) in
@@ -56,3 +56,8 @@ module Range = struct
   end)
 
 end
+
+
+let test_list = Range.Int.to_list  6 = [0;1;2;3;4;5;6]
+let test_fold_1 = Range.Int.fold  3 ~init: 0 ~f:(fun a x -> a +x) = 6
+let test_fold_2 = Range.Int.fold  3 ~init: [] ~f:(fun a x -> x::a) = [3;2;1;0]
